@@ -1,0 +1,219 @@
+{
+  "entities": {
+    "Admin": {
+      "title": "Admin",
+      "description": "Administrator profile",
+      "type": "object",
+      "properties": {
+        "uid": { "type": "string" },
+        "name": { "type": "string" },
+        "email": { "type": "string" },
+        "mobile": { "type": "string" },
+        "role": { "type": "string", "enum": ["super_admin", "admin"] },
+        "photoURL": { "type": "string" },
+        "isActive": { "type": "boolean" },
+        "createdAt": { "type": "number" },
+        "updatedAt": { "type": "number" }
+      },
+      "required": ["uid", "name", "email", "mobile", "role", "isActive", "createdAt", "updatedAt"]
+    },
+    "FeeStructure": {
+      "title": "FeeStructure",
+      "description": "Fee configuration",
+      "type": "object",
+      "properties": {
+        "feeMonth": { "type": "string" },
+        "feeYear": { "type": "string" },
+        "monthlyFee": { "type": "number" },
+        "securityDeposit": { "type": "number" },
+        "lateFee": { "type": "number" },
+        "dueDate": { "type": "string" },
+        "isActive": { "type": "boolean" },
+        "description": { "type": "string" },
+        "createdAt": { "type": "number" },
+        "updatedAt": { "type": "number" }
+      }
+    },
+    "StudentProfile": {
+      "title": "StudentProfile",
+      "description": "Student user profile",
+      "type": "object",
+      "properties": {
+        "uid": { "type": "string" },
+        "fullName": { "type": "string" },
+        "fatherName": { "type": "string" },
+        "mobileNumber": { "type": "string" },
+        "fatherMobileNumber": { "type": "string" },
+        "email": { "type": "string" },
+        "aadhaarNumber": { "type": "string" },
+        "rollNumberOrApplicationNumber": { "type": "string" },
+        "course": { "type": "string" },
+        "year": { "type": "string" },
+        "roomId": { "type": "string" },
+        "feePlanId": { "type": "string" },
+        "address": { "type": "string" },
+        "photoURL": { "type": "string" },
+        "profileCompleted": { "type": "boolean" },
+        "accountStatus": { "type": "string", "enum": ["Active", "Inactive"] },
+        "createdAt": { "type": "number" },
+        "updatedAt": { "type": "number" }
+      },
+      "required": ["uid", "fullName", "email"]
+    },
+    "PaymentRequest": {
+      "title": "PaymentRequest",
+      "description": "Fee payment request submitted by student",
+      "type": "object",
+      "properties": {
+        "studentUID": { "type": "string" },
+        "studentName": { "type": "string" },
+        "fatherName": { "type": "string" },
+        "mobileNumber": { "type": "string" },
+        "course": { "type": "string" },
+        "year": { "type": "string" },
+        "roomNumber": { "type": "string" },
+        "feeMonth": { "type": "string" },
+        "feeYear": { "type": "string" },
+        "amount": { "type": "number" },
+        "transactionId": { "type": "string" },
+        "paymentDate": { "type": "string" },
+        "paymentTime": { "type": "string" },
+        "paymentScreenshotURL": { "type": "string" },
+        "status": { "type": "string", "enum": ["Pending", "Approved", "Rejected"] },
+        "submittedAt": { "type": "number" },
+        "verifiedAt": { "type": "number" },
+        "verifiedBy": { "type": "string" }
+      },
+      "required": ["studentUID", "status", "submittedAt"]
+    },
+    "Payment": {
+      "title": "Payment",
+      "description": "Approved payment record",
+      "type": "object",
+      "properties": {
+        "studentUID": { "type": "string" },
+        "studentName": { "type": "string" },
+        "fatherName": { "type": "string" },
+        "mobileNumber": { "type": "string" },
+        "course": { "type": "string" },
+        "year": { "type": "string" },
+        "roomNumber": { "type": "string" },
+        "feeMonth": { "type": "string" },
+        "feeYear": { "type": "string" },
+        "amount": { "type": "number" },
+        "transactionId": { "type": "string" },
+        "paymentDate": { "type": "string" },
+        "paymentTime": { "type": "string" },
+        "verificationDate": { "type": "number" },
+        "receiptPDFUrl": { "type": "string" },
+        "createdAt": { "type": "number" }
+      }
+    },
+    "Room": {
+      "title": "Room",
+      "description": "Hostel room",
+      "type": "object",
+      "properties": {
+        "roomNumber": { "type": "string" },
+        "roomType": { "type": "string" },
+        "capacity": { "type": "number" },
+        "occupied": { "type": "number" },
+        "available": { "type": "number" },
+        "students": { "type": "array" },
+        "monthlyFee": { "type": "number" },
+        "status": { "type": "string" }
+      }
+    },
+    "Notification": {
+      "title": "Notification",
+      "description": "Alert or message",
+      "type": "object",
+      "properties": {
+        "title": { "type": "string" },
+        "message": { "type": "string" },
+        "targetType": { "type": "string" },
+        "targetUID": { "type": "string" },
+        "isRead": { "type": "boolean" },
+        "createdAt": { "type": "number" }
+      }
+    },
+    "ActivityLog": {
+      "title": "ActivityLog",
+      "description": "Admin activity log",
+      "type": "object",
+      "properties": {
+        "userUID": { "type": "string" },
+        "role": { "type": "string" },
+        "action": { "type": "string" },
+        "resource": { "type": "string" },
+        "resourceId": { "type": "string" },
+        "timestamp": { "type": "number" }
+      }
+    },
+    "Settings": {
+      "title": "Settings",
+      "description": "Global Settings",
+      "type": "object",
+      "properties": {
+        "hostelName": { "type": "string" },
+        "hostelAddress": { "type": "string" },
+        "hostelPhone": { "type": "string" },
+        "hostelEmail": { "type": "string" },
+        "hostelLogo": { "type": "string" },
+        "upiQRCodeURL": { "type": "string" }
+      }
+    },
+    "GalleryImage": {
+      "title": "GalleryImage",
+      "description": "Image in gallery",
+      "type": "object",
+      "properties": {
+        "url": { "type": "string" },
+        "category": { "type": "string" },
+        "createdAt": { "type": "number" }
+      }
+    }
+  },
+  "firestore": {
+    "admins": {
+      "schema": "Admin",
+      "description": "Administrator profiles"
+    },
+    "students": {
+      "schema": "StudentProfile",
+      "description": "Student profiles"
+    },
+    "feeStructures": {
+      "schema": "FeeStructure",
+      "description": "Fee structures"
+    },
+    "paymentRequests": {
+      "schema": "PaymentRequest",
+      "description": "Payment requests from students"
+    },
+    "payments": {
+      "schema": "Payment",
+      "description": "Approved payments"
+    },
+    "rooms": {
+      "schema": "Room",
+      "description": "Hostel rooms"
+    },
+    "notifications": {
+      "schema": "Notification",
+      "description": "System notifications"
+    },
+    "activityLogs": {
+      "schema": "ActivityLog",
+      "description": "Audit logs for admins"
+    },
+    "settings": {
+      "schema": "Settings",
+      "description": "App settings"
+    },
+    "gallery": {
+      "schema": "GalleryImage",
+      "description": "Gallery images"
+    }
+  }
+}

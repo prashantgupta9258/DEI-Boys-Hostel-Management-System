@@ -1,0 +1,6 @@
+{
+  "name": "DEI Boys Hostel Management System",
+  "description": "Hostel Management System for DEI Boys Hostel. Includes student portal, mandatory profile completion, and fee management.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

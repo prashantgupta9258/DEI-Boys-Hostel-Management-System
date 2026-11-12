@@ -1,0 +1,93 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // 1. Global Safety Net
+    match /{document=**} {
+      allow read, write: if false;
+    }
+    
+    // Core Functions
+    function isSignedIn() { return request.auth != null; }
+    function isAdmin() { return isSignedIn() && exists(/databases/$(database)/documents/admins/$(request.auth.uid)); }
+    function isSuperAdmin() { return isSignedIn() && (request.auth.token.email == 'prashantgupta9258@gmail.com' || (exists(/databases/$(database)/documents/admins/$(request.auth.uid)) && get(/databases/$(database)/documents/admins/$(request.auth.uid)).data.role == 'super_admin')); }
+    function incoming() { return request.resource.data; }
+    function existing() { return resource.data; }
+    
+    // Admins Collection
+    match /admins/{userId} {
+      allow read: if isSuperAdmin() || (isSignedIn() && request.auth.uid == userId);
+      allow create, update: if isSuperAdmin() || (isSignedIn() && request.auth.token.email == 'prashantgupta9258@gmail.com');
+      allow delete: if isSuperAdmin() || (isSignedIn() && request.auth.token.email == 'prashantgupta9258@gmail.com');
+    }
+    
+    // Students Collection
+    match /students/{studentId} {
+      allow read: if isAdmin() || (isSignedIn() && request.auth.uid == studentId) || (isSignedIn() && resource.data.email == request.auth.token.email);
+      allow create: if isSignedIn() && request.auth.uid == studentId;
+      // Allow students to update their own profile, or admins to manage all
+      allow update: if isAdmin() || (isSignedIn() && request.auth.uid == studentId) || (isSignedIn() && resource.data.email == request.auth.token.email);
+      allow delete: if isAdmin();
+    }
+    
+    // Fee Structures
+    match /feeStructures/{docId} {
+      allow read: if isSignedIn();
+      allow create, update, delete: if isAdmin();
+    }
+    
+    // Payment Requests
+    match /paymentRequests/{docId} {
+      allow read: if isAdmin() || (isSignedIn() && resource.data.studentUID == request.auth.uid);
+      allow create: if isSignedIn() && incoming().studentUID == request.auth.uid;
+      // Students can update their own pending requests. Admins can update any.
+      allow update: if isAdmin() || (isSignedIn() && existing().studentUID == request.auth.uid && existing().status == 'Pending');
+      allow delete: if isAdmin();
+    }
+    
+    // Approved Payments
+    match /payments/{docId} {
+      allow read: if isAdmin() || (isSignedIn() && resource.data.studentUID == request.auth.uid);
+      // Only admins should create approved payments (after verifying requests)
+      allow create, update, delete: if isAdmin();
+    }
+    
+    // Rooms
+    match /rooms/{docId} {
+      allow read: if true;
+      allow create, update, delete: if isAdmin();
+    }
+    
+    // Notifications
+    match /notifications/{docId} {
+      // Students can read notifications targeted to 'all' or 'student' with their UID.
+      allow read: if isAdmin() || (isSignedIn() && (resource.data.targetType == 'all' || (resource.data.targetType == 'student' && resource.data.targetUID == request.auth.uid)));
+      allow create, update, delete: if isAdmin();
+    }
+    
+    // Activity Logs
+    match /activityLogs/{docId} {
+      allow read: if isAdmin();
+      allow create: if isSignedIn();
+      allow update, delete: if false; // Audit logs should be append-only
+    }
+    
+    // Settings
+    match /settings/{docId} {
+      allow read: if true; // Global settings like UPI QR might be needed on public pages
+      allow create, update, delete: if isAdmin();
+    }
+    
+    // Gallery
+    match /gallery/{docId} {
+      allow read: if true;
+      allow create, update, delete: if isAdmin();
+    }
+
+    // Contact Messages
+    match /contactMessages/{docId} {
+      allow create: if true;
+      allow read, update, delete: if isAdmin();
+    }
+  }
+}
